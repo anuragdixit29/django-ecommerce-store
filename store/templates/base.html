@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ShopEasy{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'store/css/style.css' %}">
+</head>
+<body>
+    <header class="navbar">
+        <a href="{% url 'homepage' %}" class="brand">🛒 ShopEasy</a>
+        <nav>
+            <a href="{% url 'homepage' %}">Home</a>
+            {% if request.session.customer %}
+                <a href="{% url 'cart' %}">Cart{% if cart_count %} ({{ cart_count }}){% endif %}</a>
+                <a href="{% url 'orders' %}">My Orders</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'signup' %}">Sign Up</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>&copy; {% now "Y" %} ShopEasy &mdash; Django E-commerce Demo</p>
+    </footer>
+</body>
+</html>

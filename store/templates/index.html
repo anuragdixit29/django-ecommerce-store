@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static store_extras %}
+
+{% block title %}ShopEasy &ndash; Catalog{% endblock %}
+
+{% block content %}
+<div class="catalog-layout">
+    <aside class="sidebar">
+        <h3>Categories</h3>
+        <ul class="category-list">
+            <li><a href="{% url 'homepage' %}" class="{% if not request.GET.category %}active{% endif %}">All</a></li>
+            {% for category in categories %}
+                <li>
+                    <a href="?category={{ category.id }}" class="{% if request.GET.category == category.id|stringformat:'s' %}active{% endif %}">
+                        {{ category.name }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </aside>
+
+    <section class="product-grid">
+        {% for product in products %}
+            <div class="product-card">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                    <div class="product-placeholder">No Image</div>
+                {% endif %}
+                <h4>{{ product.name }}</h4>
+                <p class="price">₹{{ product.price }}</p>
+                <p class="desc">{{ product.description }}</p>
+
+                <form method="post" action="{% url 'homepage' %}" class="cart-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="product" value="{{ product.id }}">
+                    {% with qty=cart|default_if_none:'' %}
+                        {% if product.id|stringformat:'s' in cart %}
+                            <div class="qty-controls">
+                                <button type="submit" name="remove" value="1">-</button>
+                                <span>{{ cart|get_item:product.id }}</span>
+                                <button type="submit">+</button>
+                            </div>
+                        {% else %}
+                            <button type="submit" class="add-btn">Add to Cart</button>
+                        {% endif %}
+                    {% endwith %}
+                </form>
+            </div>
+        {% empty %}
+            <p>No products available yet. Add some from the admin panel.</p>
+        {% endfor %}
+    </section>
+</div>
+{% endblock %}

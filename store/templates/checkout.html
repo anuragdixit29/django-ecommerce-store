@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Checkout &ndash; ShopEasy{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h2>Checkout</h2>
+    <h3>Order Total: ₹{{ total }}</h3>
+    <form method="post">
+        {% csrf_token %}
+        <label>Delivery Address</label>
+        <textarea name="address" rows="3" required></textarea>
+        <label>Phone</label>
+        <input type="text" name="phone" required>
+        <button type="submit">Place Order</button>
+    </form>
+</div>
+{% endblock %}
